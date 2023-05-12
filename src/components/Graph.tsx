@@ -1,13 +1,19 @@
-import Chart from 'chart.js/auto'
 import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Chart } from 'chart.js'
+
+import { IGraphData } from '@/types'
 
 type PropsType = {
   className?: string
+  data: IGraphData[]
 }
 
-export const Graph = ({ className }: PropsType): JSX.Element => {
+export const Graph = ({ className, data }: PropsType): JSX.Element => {
   const graphCanvas = useRef(null)
   const graphInstance = useRef<Chart<'bar', number[], string> | null>(null)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!graphCanvas.current) return
@@ -29,29 +35,34 @@ export const Graph = ({ className }: PropsType): JSX.Element => {
           'Ноя',
           'Дек',
         ],
-        datasets: [
-          {
-            label: 'Фабрика А',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: 'red',
-          },
-          {
-            label: 'Фабрика Б',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: 'blue',
-          },
-        ],
+        datasets: data,
       },
       options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
         plugins: {
           legend: {
             position: 'bottom',
           },
+          datalabels: {
+            display: false,
+          },
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+          },
+          y: {
+            grid: {
+              display: false,
+            },
+          },
+        },
+        onClick: (_, elements) => {
+          if (elements.length) {
+            const { datasetIndex: factoryId, index: monthNumber } = elements[0]
+            navigate(`/details/${factoryId + 1}/${monthNumber + 1}/`)
+          }
         },
       },
     })
@@ -59,15 +70,21 @@ export const Graph = ({ className }: PropsType): JSX.Element => {
     return () => {
       graphInstance.current?.destroy()
     }
-  }, [])
+  }, [data])
 
   return (
-    <section className={className}>
-      <div className="container mx-auto px-6">
-        <div className="rounded-lg border-2 border-gray-600 p-3">
-          <canvas ref={graphCanvas} />
-        </div>
-      </div>
-    </section>
+    <>
+      {data && (
+        <section className={className}>
+          <div className="container mx-auto px-6">
+            <div className="rounded-lg border-2 border-gray-600 p-3">
+              <div className="flex aspect-[16/8] justify-center">
+                <canvas ref={graphCanvas} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+    </>
   )
 }

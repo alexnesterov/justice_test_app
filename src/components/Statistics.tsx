@@ -1,11 +1,17 @@
 import Chart from 'chart.js/auto'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { useEffect, useRef } from 'react'
+
+import type { IGraphDetail } from '@/types'
+
+Chart.register(ChartDataLabels)
 
 type PropsType = {
   className?: string
+  data: IGraphDetail[]
 }
 
-export const Statistics = ({ className }: PropsType): JSX.Element => {
+export const Statistics = ({ className, data }: PropsType): JSX.Element => {
   const graphCanvas = useRef(null)
   const graphInstance = useRef<Chart<'pie', number[], string> | null>(null)
 
@@ -16,23 +22,26 @@ export const Statistics = ({ className }: PropsType): JSX.Element => {
       type: 'pie',
       data: {
         labels: ['Продукт 1', 'Продукт 2'],
-        datasets: [
-          {
-            label: 'Фабрика А',
-            data: [100, 200],
-            backgroundColor: ['green', 'orange'],
-          },
-        ],
+        datasets: data,
       },
       options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
+        layout: {
+          padding: 32,
         },
         plugins: {
           legend: {
             position: 'bottom',
+          },
+          tooltip: {
+            enabled: false,
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            color: ['green', 'orange'],
+            font: {
+              size: 20,
+            },
           },
         },
       },
@@ -41,12 +50,12 @@ export const Statistics = ({ className }: PropsType): JSX.Element => {
     return () => {
       graphInstance.current?.destroy()
     }
-  }, [])
+  }, [data])
 
   return (
     <section className={className}>
       <div className="container mx-auto px-6">
-        <div className="wfu m-auto max-w-md">
+        <div className="wfu m-auto max-w-lg">
           <canvas ref={graphCanvas} />
         </div>
       </div>

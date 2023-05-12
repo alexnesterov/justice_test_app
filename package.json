@@ -9,12 +9,18 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "tsc && vite build && vite preview",
-    "api": "json-server --watch ./data/products.json --port 3001"
+    "api": "json-server --watch ./data/products.json --port 3001",
+    "dockerize": "docker build -t justice_test_app .",
+    "start-container": "docker run --init --rm -p 3000:3000 justice_test_app"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "chart.js": "^4.3.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.1"
   },
   "devDependencies": {

@@ -23,6 +23,8 @@ export default function ErrorPage() {
       </section>
     )
   } else {
-    return <div>Что-то пошло не так.</div>
+    return (
+      <div className="container mx-auto mt-16 px-6">Что-то пошло не так.</div>
+    )
   }
 }
